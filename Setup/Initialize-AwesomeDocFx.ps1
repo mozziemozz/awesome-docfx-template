@@ -1,3 +1,7 @@
+[CmdletBinding()]
+param (
+    [Parameter(Mandatory=$true)][string]$AppTitle = "My Docs"
+)
 
 if (!(Test-Path -Path .\Docs)) {
     docfx init --quiet --output .\Docs
@@ -15,8 +19,6 @@ if (!(Test-Path -Path .\Docs)) {
     $docFxJson = Get-Content -Path .\Setup\docfx_template.json
     Set-Content -Path .\Docs\docfx.json -Value $docFxJson -Force
 
-    $appTitle = Read-Host "Enter your website title. E.g. 'Awesome Docs'"
-
     $globalMetaData = @"
 {
     "_appTitle": "$appTitle",
@@ -28,6 +30,8 @@ if (!(Test-Path -Path .\Docs)) {
     Set-Content -Path .\Docs\globalMetaData.json -Value $globalMetaData
 
 }
+
+$articlesFiles = Get-ChildItem -Path .\Docs\articles -Directory | ForEach-Object {Remove-Item -Path $_.FullName -Recurse}
 
 $mainToc = @"
 - name: Home

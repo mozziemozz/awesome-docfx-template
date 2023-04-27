@@ -1,3 +1,19 @@
+$checkPnPSession = Get-PnPContext
+
+if (!$checkPnPSession) {
+
+    $siteUrl = Read-Host "Enter your SharePoint Online site url"
+
+    # $siteUrl = "https://mozzism.sharepoint.com/sites/AzureAutomation"
+
+    Connect-PnPOnline -Interactive -Url $siteUrl
+
+}
+
+$TargetFolderName = Read-Host "Enter the name of your target folder in SharePoint Online"
+
+# $TargetFolderName = "Web Sites"
+
 if ((Test-Path -Path .\Docs\_site_last_build)) {
 
     Remove-Item -Path .\Docs\_site_last_build -Recurse -Force
@@ -9,38 +25,9 @@ if ((Test-Path -Path .\Docs\_site)) {
 
     $isInitialBuild = $false
 
-    $staticWebAppConfig = @"
-{
-    "routes": [
-        {
-        "route": "/*",
-        "allowedRoles": ["authenticated"]
-        }
-    ],
-    "responseOverrides": {
-        "401": {
-        "statusCode": 302,
-        "redirect": "/.auth/login/aad"
-        }
-    },
-    "auth": {
-        "identityProviders": {
-            "azureActiveDirectory": {
-            "registration": {
-                "openIdIssuer": "https://login.microsoftonline.com/4bffbf87-53a0-4fce-b58b-4179cb3a3b7d/v2.0",
-                "clientIdSettingName": "AZURE_CLIENT_ID",
-                "clientSecretSettingName": "AZURE_CLIENT_SECRET"
-            }
-            }
-        }
-    }
-}    
-"@
-
     Rename-Item -Path .\Docs\_site -NewName "_site_last_build"
 
     New-Item -Path .\Docs\_site -ItemType Directory
-    Set-Content -Path .\Docs\_site\staticwebapp.config.json -Value $staticWebAppConfig
 
 }
 
@@ -92,12 +79,7 @@ foreach ($jsonFile in $jsonFiles) {
 
 }
 
-$siteUrl = "https://mozzism.sharepoint.com/sites/AzureAutomation"
-
-# Connect-PnPOnline -Interactive -Url $siteUrl
-
-$TargetFolderName = "Web Sites"
-$LocalFolderPath = "C:\Temp\GitHub\DocFxOnSharePoint\Docs\_site"
+$LocalFolderPath = (git rev-parse --show-toplevel) + "/Docs/_site"
 
 Resolve-PnPFolder -SiteRelativePath $TargetFolderName
 
