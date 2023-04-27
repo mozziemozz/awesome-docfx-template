@@ -1,0 +1,29 @@
+﻿Category;SubCategory1;SubCategory2;SubCategory3
+Azure;Automation;Runbooks;Jobs
+Azure;Automation;Runbooks;Schedules
+Azure;Automation;Runbooks;Webhooks
+Azure;Automation;Variables;
+Azure;Functions;Authentication;
+Azure;Functions;Testing;
+Microsoft 365;Teams;Meetings;Join Meeting
+Microsoft 365;Teams;Meetings;Organize Meeting
+Microsoft 365;Teams;Collaboration;
+Microsoft 365;Teams;Voice;Calling Plans
+Microsoft 365;Teams;Voice;Calling Plans
+Microsoft 365;Teams;Voice;Operator Connect
+Microsoft 365;Teams;Voice;Direct Routing
+Microsoft 365;Teams;;
+Microsoft 365;SharePoint;;
+Microsoft 365;Exchange;;
+Microsoft 365;;;
+PowerShell;Modules;;
+PowerShell;Scripts;;
+PowerShell;IDEs;VS Code;
+PowerShell;IDEs;PowerShell ISE;
+PowerShell;;;
+DocFx;;;
+Windows;Windows 11;OS;
+Windows;Windows 11;Apps;Windows Terminal
+Windows;Windows 11;Apps;PowerToys
+Windows;Windows 10;Update;
+CallFlows;;;
