@@ -2,17 +2,49 @@ $checkPnPSession = Get-PnPContext
 
 if (!$checkPnPSession) {
 
-    $siteUrl = Read-Host "Enter your SharePoint Online site url"
+    if (!(Test-Path -Path .\Build\SiteUrl.txt)) {
 
-    # $siteUrl = "https://mozzism.sharepoint.com/sites/AzureAutomation"
+        $siteUrl = Read-Host "Enter or paste your SharePoint Online target site url"
+
+        Set-Content -Path .\Build\SiteUrl.txt -Value $siteUrl -NoNewline
+
+    }
+
+    else {
+
+        $siteUrl = Get-Content -Path .\Build\SiteUrl.txt
+
+    }
 
     Connect-PnPOnline -Interactive -Url $siteUrl
 
 }
 
-$TargetFolderName = Read-Host "Enter the name of your target folder in SharePoint Online"
+$targetDocumentLibrary = (Get-Content -Path .\Docs\globalMetaData.json | ConvertFrom-Json)._appTitle
 
-# $TargetFolderName = "Web Sites"
+$checkDocumentLibraries = Get-PnPList
+
+if ($checkDocumentLibraries.Title -notcontains $targetDocumentLibrary) {
+
+    New-PnPList -Title $targetDocumentLibrary -Template DocumentLibrary -OnQuickLaunch
+
+}
+
+
+$checkCustomScripts = Get-PnPTenantSite -Url $siteUrl
+
+if ($checkCustomScripts.DenyAddAndCustomizePages -eq "Disabled") {
+
+    Write-Host "Custom scripts are already enabled for this site." -ForegroundColor Green
+
+} 
+
+else {
+
+    Write-Host "Custom scripts are not enabled for this site. They will be enabled now." -ForegroundColor Yellow
+    Set-PnPSite -Identity $siteUrl -NoScriptSite $false
+
+}
 
 if ((Test-Path -Path .\Docs\_site_last_build)) {
 
@@ -79,9 +111,9 @@ foreach ($jsonFile in $jsonFiles) {
 
 }
 
-$LocalFolderPath = (git rev-parse --show-toplevel) + "/Docs/_site"
+$LocalFolderPath = ((git rev-parse --show-toplevel) + "/Docs/_site").Replace('/','\')
 
-Resolve-PnPFolder -SiteRelativePath $TargetFolderName
+# Resolve-PnPFolder -SiteRelativePath $targetDocumentLibrary
 
 $newSiteBuildFiles = Get-ChildItem -Path .\Docs\_site -Recurse -File
 
@@ -89,7 +121,7 @@ if ($isInitialBuild) {
 
     foreach ($file in $newSiteBuildFiles) {
 
-        $spoTargetPath = $file.DirectoryName.Replace($LocalFolderPath,$TargetFolderName).Replace('\','/')
+        $spoTargetPath = $file.DirectoryName.Replace($LocalFolderPath,$targetDocumentLibrary).Replace('\','/')
 
         Add-PnPFile -Path ($File.FullName.ToString()) -Folder $spoTargetPath -NewFileName $file.Name -Values @{"Title" = $($File.Name) } | Out-Null
         Write-Host "Uploaded File: $($File.FullName)`nat $spoTargetPath/$($file.Name)"
@@ -108,7 +140,17 @@ else {
 
         $file.FullName
 
-        $lastFileHash = Get-FileHash -Path $file.FullName.Replace("_site","_site_last_build")
+        if (Test-Path -Path $file.FullName.Replace("_site","_site_last_build")) {
+
+            $lastFileHash = Get-FileHash -Path $file.FullName.Replace("_site","_site_last_build")
+
+        }
+
+        else {
+
+            $lastFileHash = $null
+
+        }
 
         $file.FullName.Replace("_site","_site_last_build")
 
@@ -120,9 +162,19 @@ else {
 
         else {
 
-            Write-Host "File '$($file.Name)' is changed." -ForegroundColor Yellow
+            if ($null -eq $lastFileHash) {
 
-            $spoTargetPath = $file.DirectoryName.Replace($LocalFolderPath,$TargetFolderName).Replace('\','/')
+                Write-Host "File '$($file.Name)' is new." -ForegroundColor Yellow
+
+            }
+
+            else {
+
+                Write-Host "File '$($file.Name)' is changed." -ForegroundColor Yellow
+
+            }
+
+            $spoTargetPath = $file.DirectoryName.Replace($LocalFolderPath,$targetDocumentLibrary).Replace('\','/')
 
             Add-PnPFile -Path ($File.FullName.ToString()) -Folder $spoTargetPath -NewFileName $file.Name -Values @{"Title" = $($File.Name) } | Out-Null
             Write-Host "Uploaded File: $($File.FullName)`nat $spoTargetPath/$($file.Name)"            
