@@ -17,6 +17,12 @@
       }
     ],
     "build": {
+      "globalMetadata" : 
+        {
+          "_appTitle": "appTitlePlaceHolder",
+          "_enableSearch": "true",
+          "_disableNewTab": "false"
+      },    
       "content": [
         {
           "files": [

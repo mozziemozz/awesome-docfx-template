@@ -16,18 +16,8 @@ if (!(Test-Path -Path .\Docs)) {
 
     Copy-Item -Path .\Setup\templates -Recurse -Destination .\Docs
 
-    $docFxJson = Get-Content -Path .\Setup\docfx_template.json
+    $docFxJson = (Get-Content -Path .\Setup\docfx_template.json).Replace("appTitlePlaceHolder",$AppTitle)
     Set-Content -Path .\Docs\docfx.json -Value $docFxJson -Force
-
-    $globalMetaData = @"
-{
-    "_appTitle": "$appTitle",
-    "_enableSearch": "true",
-    "_enableNewTab": "true"
-}
-"@
-
-    Set-Content -Path .\Docs\globalMetaData.json -Value $globalMetaData
 
 }
 

@@ -20,7 +20,7 @@ if (!$checkPnPSession) {
 
 }
 
-$targetDocumentLibrary = (Get-Content -Path .\Docs\globalMetaData.json | ConvertFrom-Json)._appTitle
+$targetDocumentLibrary = (Get-Content -Path .\Docs\docfx.json | ConvertFrom-Json).build.globalMetadata._appTitle
 
 $checkDocumentLibraries = Get-PnPList
 
