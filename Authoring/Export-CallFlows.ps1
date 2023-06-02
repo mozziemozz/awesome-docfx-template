@@ -8,6 +8,6 @@ $allAutoAttendants = $null
 $allCallQueues = $null
 $allResourceAccounts = $null
 
-. .\AllTopLevelVoiceAppsToMarkdownDocFx.ps1
+. .\AllTopLevelVoiceAppsToMarkdownDocFx.ps1 -ArticlesRelativePath "call-flows"
 
 Set-Location $localRepoPath

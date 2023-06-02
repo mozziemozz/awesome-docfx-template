@@ -130,9 +130,6 @@ function Create-FoldersAndMarkdownFiles {
         }
 
     }
-
-
-
     
 }
 
@@ -143,10 +140,10 @@ foreach ($entry in $structure) {
     $subCategory2 = $entry.subCategory2
     $subCategory3 = $entry.subCategory3
 
-    $mainCategorySafeName = $mainCategory.Replace(" ","").ToLower()
-    $subCategory1SafeName = $subCategory1.Replace(" ","").ToLower()
-    $subCategory2SafeName = $subCategory2.Replace(" ","").ToLower()
-    $subCategory3SafeName = $subCategory3.Replace(" ","").ToLower()
+    $mainCategorySafeName = $mainCategory.Replace(" ","-").ToLower()
+    $subCategory1SafeName = $subCategory1.Replace(" ","-").ToLower()
+    $subCategory2SafeName = $subCategory2.Replace(" ","-").ToLower()
+    $subCategory3SafeName = $subCategory3.Replace(" ","-").ToLower()
 
     if ($mainToc -notmatch "`n- name: $mainCategory`n  href: articles/$mainCategorySafeName/") {
 
@@ -187,9 +184,9 @@ $articlesToc = @"
 - name: Home
   href: ../index.md
 - name: Getting Started
-  href: getting_started.md
+  href: getting-started.md
 "@
 
-Set-Content .\Docs\articles\getting_started.md -Value "# Getting Started"
+Set-Content .\Docs\articles\getting-started.md -Value "# Getting Started"
 
 Set-Content .\Docs\articles\toc.yml -Value $articlesToc
