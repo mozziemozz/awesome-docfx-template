@@ -48,7 +48,8 @@
             "articles/**.mp3",
             "articles/**.wma",
             "articles/**.png",
-            "articles/**.htm"
+            "articles/**.htm",
+            "Web.Config"
           ]
         }
       ],

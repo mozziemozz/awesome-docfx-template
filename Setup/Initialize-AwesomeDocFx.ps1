@@ -7,6 +7,7 @@ if (!(Test-Path -Path .\Docs)) {
     docfx init --quiet --output .\Docs
 
     Remove-Item -Path .\Docs\api -Recurse -Force
+    Remove-Item -Path .\Docs\.gitignore -Force
     Remove-Item -Path .\Docs\apidoc -Recurse -Force
     Remove-Item -Path .\Docs\src -Recurse -Force
     Remove-Item -Path .\Docs\articles\intro.md -Recurse -Force
