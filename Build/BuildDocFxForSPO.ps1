@@ -69,7 +69,7 @@ else {
 
 }
 
-docfx .\Docs\docfx.json --build
+docfx .\Docs\docfx.json
 
 $htmlFiles = Get-ChildItem -Path ".\Docs\_site" -Recurse -Filter "*.html"
 
