@@ -190,11 +190,11 @@ function New-DocFxTabbedContent {
 
 # [$TabNameA](#tab/$TabNameSafeA)
 
-Content for Tab A $TabId...
+Content for Tab $TabNameA $TabId...
 
 # [$TabNameB](#tab/$TabNameSafeB)
 
-Content for Tab B $TabId...
+Content for Tab $TabNameB $TabId...
 
 ---
 
