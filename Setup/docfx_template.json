@@ -17,6 +17,11 @@
       }
     ],
     "build": {
+      "markdownEngineProperties": {
+        "alerts": {
+          "EXAMPLE": "alert alert-secondary"
+        }
+      },
       "globalMetadata" : 
         {
           "_appTitle": "appTitlePlaceHolder",
