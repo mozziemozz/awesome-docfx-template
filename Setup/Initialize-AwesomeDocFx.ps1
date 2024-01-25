@@ -3,24 +3,40 @@ param (
     [Parameter(Mandatory=$true)][string]$AppTitle = "My Docs"
 )
 
-if (!(Test-Path -Path .\Docs)) {
-    docfx init --quiet --output .\Docs
+$requiredVersion = "2.75.1"
 
-    Remove-Item -Path .\Docs\api -Recurse -Force
-    Remove-Item -Path .\Docs\.gitignore -Force
-    Remove-Item -Path .\Docs\apidoc -Recurse -Force
-    Remove-Item -Path .\Docs\src -Recurse -Force
-    Remove-Item -Path .\Docs\articles\intro.md -Recurse -Force
-    Remove-Item -Path .\Docs\articles\toc.yml -Recurse -Force
+$checkDoxFxVersion = (docfx --version).Split("+")[0]
 
-    Rename-Item -Path .\Docs\images -NewName ".attachments"
+if ($checkDoxFxVersion -eq $requiredVersion) {
 
-    Copy-Item -Path .\Setup\templates -Recurse -Destination .\Docs
-
-    $docFxJson = (Get-Content -Path .\Setup\docfx_template.json).Replace("appTitlePlaceHolder",$AppTitle)
-    Set-Content -Path .\Docs\docfx.json -Value $docFxJson -Force
+    Write-Host "DocFx Version Check: OK" -ForegroundColor Green
 
 }
+
+else {
+
+    Write-Host "DocFx Version Check: Not OK" -ForegroundColor Red
+    Write-Host "DocFx Version 2.75.1 is required. You are running version $checkDoxFxVersion" -ForegroundColor Red
+
+    if ($checkDoxFxVersion -gt $requiredVersion) {
+
+        Write-Host "Please downgrade your DocFx version to 2.75.1" -ForegroundColor Red
+        Write-Host "Run this command:" 'dotnet tool uninstall docfx --global' -ForegroundColor Yellow
+        Write-Host "Then run this command:" 'dotnet tool install -g --add-source 'https://api.nuget.org/v3/index.json' --ignore-failed-sources docfx --version 2.75.1' -ForegroundColor Yellow
+
+    }
+
+    else {
+
+        Write-Host "Please upgrade your DocFx version to 2.75.1" -ForegroundColor Red
+        Write-Host "Run this command:" "dotnet tool update -g --add-source 'https://api.nuget.org/v3/index.json' --ignore-failed-sources 'docfx' --version '2.75.1'" -ForegroundColor Yellow
+
+    }
+
+}
+
+$docFxJson = (Get-Content -Path .\Setup\docfx_template.json).Replace("appTitlePlaceHolder", $AppTitle)
+Set-Content -Path .\Docs\docfx.json -Value $docFxJson -Force
 
 $articlesFiles = Get-ChildItem -Path .\Docs\articles -Directory | ForEach-Object {Remove-Item -Path $_.FullName -Recurse}
 
@@ -63,7 +79,7 @@ function Create-FoldersAndMarkdownFiles {
 
     }
 
-    
+
     if (!(Test-Path -Path .\Docs\articles\$mainCategorySafeName\toc.yml)) {
 
         New-Item -Path .\Docs\articles\$mainCategorySafeName\toc.yml
@@ -131,7 +147,7 @@ function Create-FoldersAndMarkdownFiles {
         }
 
     }
-    
+
 }
 
 foreach ($entry in $structure) {
